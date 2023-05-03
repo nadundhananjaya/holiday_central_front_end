@@ -2,7 +2,6 @@ import react, {useEffect, useState} from "react";
 import NavigationBar from "../NavigationBar/NavigationBar";
 
 
-
 const getCurrentDate = () => {
     const inputDate = new Date().toLocaleDateString();
     const parts = inputDate.split('/');
@@ -24,6 +23,16 @@ const getDayAfterWeek = () => {
     console.log(formatedDate)
     return formatedDate
 }
+
+function dateDiffInDays(a, b) {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+
 const HotelList = () => {
 
 
@@ -69,7 +78,7 @@ const HotelList = () => {
     }
     useEffect(() => {
         loadHotelList()
-    }, [checkInDate,checkOutDate,destination]);
+    }, [checkInDate, checkOutDate, destination]);
 
     return <>
         <NavigationBar/>
@@ -134,6 +143,11 @@ const HotelList = () => {
         <div className={`mt-5`}>
             <div className={`row g-3`}>
                 {hotelList.map((hotel, index) => {
+                        const rooms = hotel.rooms;
+                        const lowestPrice = Math.min(...rooms.map(item => parseInt(item.pricePerNight)));
+                        const noOfDays = dateDiffInDays(new Date(checkInDate), new Date(checkOutDate))
+
+                        const facilities = hotel.facilities.join(',')
                         return <div key={index} className={` col-12 col-lg-6`}>
                             <div className={`card m-1`}>
                                 <div className="card-body">
@@ -144,8 +158,22 @@ const HotelList = () => {
                                     <div className={`row`}>
                                         <div className={`col-12 px-3`}>
                                             <p className={`text-start`}>
-                                                Booking Starting from <strong>Rs. {}</strong>
+                                                Booking Starting from <strong>Rs. {lowestPrice * noOfDays}</strong>
                                             </p>
+                                            <p className={`text-start`}>
+                                                Bill Per Day Starting from <strong>Rs. {lowestPrice}</strong>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className={`row`}>
+                                        <div className={`col-12 px-3`}>
+                                            <p className={`text-start`}>
+                                                Facilities : <strong>{
+                                                facilities
+                                            }</strong>
+                                            </p>
+
                                         </div>
                                     </div>
                                     <a href="#" className="btn btn-dark float-end mt-4">Book Hotel</a>

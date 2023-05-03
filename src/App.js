@@ -5,9 +5,8 @@ import ErrorPage from "./Error";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Login from "./component/auth/Login";
 import FlightList from "./component/Flight/FlightList";
-import FlightAdd from "./component/Flight/FlightAdd";
-import FlightUpdate from "./component/Flight/FlightUpdate";
 import HotelList from "./component/Hotel/HotelList";
+import PackageList from "./component/Package/PackageList";
 
 
 const router = createBrowserRouter([
@@ -25,18 +24,15 @@ const router = createBrowserRouter([
                 path: "/flight",
                 element: <FlightList/>,
             },
-            {
-                path: "/flight/add",
-                element: <FlightAdd/>,
-            },
-            {
-                path: "/flight/update",
-                element: <FlightUpdate/>,
-            },
             //     Hotel Routes
             {
                 path: "/hotel",
                 element: <HotelList/>,
+            },
+            //     Package Routes
+            {
+                path: "/package",
+                element: <PackageList/>,
             },
         ],
     },
