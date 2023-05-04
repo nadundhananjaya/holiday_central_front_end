@@ -1,6 +1,7 @@
 import react, {useEffect, useState} from "react";
 import NavigationBar from "../NavigationBar/NavigationBar";
-
+import {toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const getCurrentDate = () => {
     const inputDate = new Date().toLocaleDateString();
@@ -60,10 +61,33 @@ const HotelList = () => {
                 "destination": destination,
             })
         });
+
         const data = await response.json();
         setHotelList(data)
     }
 
+    const addCart = (newCartObject) => {
+        const cartItems = localStorage.getItem("cart_items")
+
+        if (cartItems === null) {
+            const newItem = [newCartObject]
+            localStorage.setItem("cart_items", JSON.stringify(newItem));
+            toast("Successfully added to cart !");
+        } else {
+            const cartArray = JSON.parse(cartItems)
+            const hasNewItem = cartArray.some(obj => obj._id === newCartObject._id);
+
+            if (hasNewItem === true) {
+                toast("Already Added to the Cart !");
+                console.log("Already added !!!")
+            } else {
+
+                const newItems = JSON.stringify([...cartArray, newCartObject])
+                localStorage.setItem("cart_items", newItems);
+                toast("Successfully added to cart !");
+            }
+        }
+    }
 
     const checkinDateChangeHandler = (event) => {
         setCheckInDate(event.target.value)
@@ -142,6 +166,8 @@ const HotelList = () => {
 
         <div className={`mt-5`}>
             <div className={`row g-3`}>
+
+
                 {hotelList.map((hotel, index) => {
                         const rooms = hotel.rooms;
                         const lowestPrice = Math.min(...rooms.map(item => parseInt(item.pricePerNight)));
@@ -176,7 +202,7 @@ const HotelList = () => {
 
                                         </div>
                                     </div>
-                                    <a href="#" className="btn btn-dark float-end mt-4">Book Hotel</a>
+                                    <button onClick={() => addCart(hotel)} href="#" className="btn btn-dark float-end mt-4">Book Hotel</button>
                                 </div>
                             </div>
                         </div>

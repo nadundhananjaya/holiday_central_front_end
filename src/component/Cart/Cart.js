@@ -1,15 +1,22 @@
 import react, {useEffect, useState} from "react"
 import NavigationBar from "../NavigationBar/NavigationBar";
+import {toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Cart = () => {
 
     const [cartList, setCartList] = useState([]);
     const [customerName, setCustomerName] = useState('');
     const [customerMobile, setCustomerMobile] = useState('')
+
     const loadCartItems = () => {
         const cartItems = localStorage.getItem("cart_items")
         const cartArray = JSON.parse(cartItems)
-        setCartList(cartArray)
+        if(cartArray !== null)
+        {
+            setCartList(cartArray)
+        }
     }
 
     useEffect(() => {
@@ -18,8 +25,8 @@ const Cart = () => {
 
     const checkOutFormHandler = async (event) => {
         event.preventDefault()
-        loadCartItems()
-        const cartItems = localStorage.getItem("cart_items")
+
+        const cart_items_packages = localStorage.getItem("cart_items")
 
 
         const response = await fetch('http://localhost:8080/checkout/add', {
@@ -29,17 +36,19 @@ const Cart = () => {
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
                 "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             body: JSON.stringify({
-                "checkOutDetails": cartItems,
+                "checkOutPackageDetails": cart_items_packages,
                 "customerName": customerName,
                 "customerMobile": customerMobile,
             })
         });
         const data = await response.json();
+        localStorage.removeItem("cart_items")
+        toast("Successfully checkout !");
+        window.location.href = '/flight'
     }
 
     const customerNameChangeHandler = (event) => {
@@ -62,26 +71,64 @@ const Cart = () => {
             </div>
 
             <div className={`row g-3`}>
-                {cartList.map((packages, index) => {
+                {cartList.map((cart, index) => {
 
+
+                    if(cart.packageName != null){
                         return <div key={index} className={` col-12 `}>
                             <div className={`card m-1`}>
                                 <div className="card-body">
-                                    <h5 className="card-title mb-4">{packages.packageName}</h5>
-                                    <p>Duration : {packages.duration}</p>
+                                    <h5 className="card-title mb-4">{cart.packageName}</h5>
+                                    <p>Duration : {cart.duration}</p>
 
-                                    <p>Destination : {packages.destination}</p>
+                                    <p>Destination : {cart.destination}</p>
 
-                                    <p>
-                                        Package Starting from (per Person) : <strong>Rs.{packages.pricePerPerson}</strong>
-                                    </p>
+                                    {/*<p>*/}
+                                    {/*    Package Starting from (per Person) : <strong>Rs.{cart.pricePerPerson}</strong>*/}
+                                    {/*</p>*/}
 
-                                    <p>Speciality : {packages.speciality}</p>
+                                    <p>Speciality : {
+
+                                        cart.speciality}</p>
 
 
                                 </div>
                             </div>
                         </div>
+                    }
+                    else  if(cart.airPlane != null){
+                        return <div key={index} className={` col-12 `}>
+                            <div className={`card m-1`}>
+                                <div className="card-body">
+                                    <h5 className="card-title mb-4">{cart.airPlane}</h5>
+                                    <p>Arrival Airport : <strong>{cart.arrivalAirport}</strong></p>
+                                    <p>Arrival Time : <strong>{cart.arrivalTime}</strong></p>
+
+                                    <p>Departure Airport : <strong>{cart.departureAirport}</strong></p>
+                                    <p>Departure Time : <strong>{cart.departureTime}</strong></p>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    else  if(cart.hotelName != null){
+
+                        const facilities = cart.facilities.join(',')
+
+                        return <div key={index} className={` col-12 `}>
+                            <div className={`card m-1`}>
+                                <div className="card-body">
+                                    <h5 className="card-title mb-4">{cart.hotelName}</h5>
+                                    <p>City : <strong>{cart.city}</strong></p>
+                                    <p>Departure Airport : <strong>{facilities}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
                     }
                 )}
             </div>
@@ -119,7 +166,7 @@ const Cart = () => {
 
                            <div className={`col-12 mt-3`}>
                                <div className="d-grid gap-2">
-                                   <button type="submit" className="btn btn-dark">Checkout</button>
+                                   <button type="submit" className="btn btn-dark" disabled={cartList.length === 0}>Checkout</button>
                                </div>
                            </div>
                        </div>

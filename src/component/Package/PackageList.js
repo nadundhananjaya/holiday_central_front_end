@@ -46,18 +46,18 @@ const PackageList = () => {
         if (cartItems === null) {
             const newItem = [newCartObject]
             localStorage.setItem("cart_items", JSON.stringify(newItem));
-            // toast("Successfully added to cart !");
+            toast("Successfully added to cart !");
         } else {
             const cartArray = JSON.parse(cartItems)
             const hasNewItem = cartArray.some(obj => obj._id === newCartObject._id);
 
             if (hasNewItem === true) {
-                // toast("Already Added to the Cart !");
+                toast("Already Added to the Cart !");
                 console.log("Already added !!!")
             } else {
 
                 const newItems = JSON.stringify([...cartArray, newCartObject])
-                // localStorage.setItem("cart_items", newItems);
+                localStorage.setItem("cart_items", newItems);
                 toast("Successfully added to cart !");
             }
         }

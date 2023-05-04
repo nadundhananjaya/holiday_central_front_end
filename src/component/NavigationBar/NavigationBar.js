@@ -35,10 +35,7 @@ const NavigationBar = () => {
                     <li className="nav-item m-lg-2">
                         <a className="nav-link" href="/package">Package</a>
                     </li>
-                    <li className="nav-item m-lg-2">
-                        <a className="nav-link" href="/customer
-                        ">Customer</a>
-                    </li>
+
                 </ul>
                 <div>
                     <a href={`/cart`} className={`btn btn-dark`}>
