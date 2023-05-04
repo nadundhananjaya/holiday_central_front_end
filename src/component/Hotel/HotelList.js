@@ -63,6 +63,7 @@ const HotelList = () => {
                 "checkInDate": checkInDate,
                 "checkOutDate": checkOutDate,
                 "destination": destination,
+                "starRating": starRating,
             })
         });
 
@@ -123,7 +124,7 @@ const HotelList = () => {
     }
     useEffect(() => {
         loadHotelList()
-    }, [checkInDate, checkOutDate, destination]);
+    }, [checkInDate, checkOutDate, destination,starRating]);
 
     return <>
         <NavigationBar/>
