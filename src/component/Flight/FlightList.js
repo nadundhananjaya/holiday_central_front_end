@@ -34,7 +34,7 @@ const FlightList = () => {
     const [cabinClass, setCabinClass] = useState('Economy')
 
     const loadFlightList = async () => {
-        const response = await fetch('http://192.168.1.240:8080/flight/list', {
+        const response = await fetch('http://localhost:8080/flight/list', {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, *cors, same-origin
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached

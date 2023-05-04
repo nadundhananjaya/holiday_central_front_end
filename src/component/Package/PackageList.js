@@ -1,5 +1,7 @@
 import react, {useEffect, useState} from "react";
 import NavigationBar from "../NavigationBar/NavigationBar";
+import {toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const PackageList = () => {
@@ -12,7 +14,7 @@ const PackageList = () => {
     const [maxNumberOfTravelers, setMaxNumberOfTravelers] = useState(5)
 
     const loadPackageList = async () => {
-        const response = await fetch('http://192.168.1.240:8080/package/list', {
+        const response = await fetch('http://localhost:8080/package/list', {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, *cors, same-origin
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -36,6 +38,29 @@ const PackageList = () => {
             "duration": parseInt(duration),
             "maxNumberOfTravelers": parseInt(maxNumberOfTravelers)
         })
+    }
+
+    const addCart = (newCartObject) => {
+        const cartItems = localStorage.getItem("cart_items")
+
+        if (cartItems === null) {
+            const newItem = [newCartObject]
+            localStorage.setItem("cart_items", JSON.stringify(newItem));
+            // toast("Successfully added to cart !");
+        } else {
+            const cartArray = JSON.parse(cartItems)
+            const hasNewItem = cartArray.some(obj => obj._id === newCartObject._id);
+
+            if (hasNewItem === true) {
+                // toast("Already Added to the Cart !");
+                console.log("Already added !!!")
+            } else {
+
+                const newItems = JSON.stringify([...cartArray, newCartObject])
+                // localStorage.setItem("cart_items", newItems);
+                toast("Successfully added to cart !");
+            }
+        }
     }
 
 
@@ -132,13 +157,15 @@ const PackageList = () => {
                                     <p>Destination : {packages.destination}</p>
 
                                     <p>
-                                        Booking Starting from <strong>Rs.{packages.pricePerPerson}</strong>
+                                        Package Starting from (per Person) : <strong>Rs.{packages.pricePerPerson}</strong>
                                     </p>
 
                                     <p>Speciality : {packages.speciality}</p>
 
 
-                                    <a href="#" className="btn btn-dark float-end mt-4">Book Package</a>
+                                    <button onClick={() => addCart(packages)} className="btn btn-dark float-end mt-4">Add to
+                                        Cart
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -146,6 +173,8 @@ const PackageList = () => {
                 )}
             </div>
         </div>
+
+        <ToastContainer/>
     </>
 }
 export default PackageList

@@ -7,6 +7,7 @@ import Login from "./component/auth/Login";
 import FlightList from "./component/Flight/FlightList";
 import HotelList from "./component/Hotel/HotelList";
 import PackageList from "./component/Package/PackageList";
+import Cart from "./component/Cart/Cart";
 
 
 const router = createBrowserRouter([
@@ -34,6 +35,12 @@ const router = createBrowserRouter([
                 path: "/package",
                 element: <PackageList/>,
             },
+            //     Cart Routes
+            {
+                path: "/cart",
+                element: <Cart/>,
+            },
+            //     Customer Routes
         ],
     },
 ]);
